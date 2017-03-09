@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-input_vcfs = Channel.fromPath(params.input_vcfs).map { file -> [file.baseName, file] }
+input_vcfs = Channel.from(params.input_vcfs).map{it -> file(it) }.map{ file -> [file.baseName, file] }
 
 process FilterVCF {
   publishDir "${params.publish_dir}/filtered", mode: 'copy'
