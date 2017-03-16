@@ -45,8 +45,9 @@ process SortVCF {
   set val("${prefix}-ss${subsamplerate}"), file("*.vcf") into sorted_vcfs
 
   """
-  
-  /usr/local/bin/vcf-sort < ${vcf} > ${prefix}-sorted.vcf
+  set -e
+  mkdir -p temp
+  /usr/local/bin/vcf-sort --temporary-directory temp < ${vcf} > ${prefix}-sorted.vcf
   """
 }
 
