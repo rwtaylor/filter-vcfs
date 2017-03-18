@@ -42,7 +42,7 @@ process SortVCF {
   set prefix, file(vcf) from filtered_vcfs
 
   output:
-  set val("${prefix}-ss${subsamplerate}"), file("*.vcf") into sorted_vcfs
+  set val("${prefix}"), file("*.vcf") into sorted_vcfs
 
   """
   set -e
