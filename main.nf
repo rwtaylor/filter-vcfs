@@ -53,7 +53,6 @@ process SortVCF {
 
 sorted_vcfs.into{ sorted_vcfs; sorted_vcfs_to_sample }
 
-
 process SampleVCF {
   publishDir "${params.publish_dir}/subsampled", mode: 'copy'
   tag {subsamplerate}
@@ -73,28 +72,6 @@ process SampleVCF {
 
   """
   /usr/local/opt/vcflib/bin/vcfrandomsample -r ${subsamplerate} ${vcf} > ${prefix}-ss${subsamplerate}.vcf
-  """
-}
-
-vcfs_to_rename = sorted_vcfs.mix(subsampled_vcfs)
-
-process RenameChromosomes {
-  publishDir "${params.publish_dir}/chr-renamed", mode: 'copy'
-  cpus 1
-  memory 4.GB
-  time 6.h
-  errorStrategy { task.exitStatus == 143 ? 'retry' : 'finish' }
-  maxRetries 7
-  maxErrors '-1'
-
-  input:
-  set prefix, file(vcf) from vcfs_to_rename
-  
-  output:
-  set val("${prefix}-chrename"), file("*.vcf") into renamed_vcfs
-
-  """
-  perl -p -e 's/N[W,C]_([0-9]*)\\./\$1/g' ${vcf} > ${prefix}-chrename.vcf
   """
 }
 
