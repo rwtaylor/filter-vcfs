@@ -131,7 +131,7 @@ process ReSortVCF {
   """
   set -e
   mkdir -p temp
-  /usr/local/bin/vcf-sort --temporary-directory temp < ${vcf} > ${prefix}.vcf
+  /usr/local/bin/vcf-sort --chromosomal-order --temporary-directory temp < ${vcf} > ${prefix}-rs.vcf
   """
 }
 
