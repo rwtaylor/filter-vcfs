@@ -112,6 +112,29 @@ process RenameChromosomes {
   """
 }
 
+process ReSortVCF {
+  publishDir "${params.publish_dir}/resorted", mode: 'copy'
+  tag { prefix }
+  cpus 1
+  memory 4.GB
+  time 6.h
+  errorStrategy { task.exitStatus == 143 ? 'retry' : 'finish' }
+  maxRetries 7
+  maxErrors '-1'
+
+  input:
+  set prefix, file(vcf) from renamed_vcfs
+
+  output:
+  set val("${prefix}"), file("*.vcf") into resorted_vcfs
+
+  """
+  set -e
+  mkdir -p temp
+  /usr/local/bin/vcf-sort --temporary-directory temp < ${vcf} > ${prefix}.vcf
+  """
+}
+
 workflow.onComplete {
   println "Pipeline completed at: $workflow.complete"
   println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
